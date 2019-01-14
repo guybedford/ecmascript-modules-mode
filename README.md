@@ -104,7 +104,10 @@ The specification for this feature is defined here - https://github.com/guybedfo
 
 This is a diff on top of the current import file specifier resolution proposal spec is available at https://github.com/nodejs/ecmascript-modules/pull/19.
 
-All the defined behaviours remain, simply delegating the mode to the `"mode": "esm"` signifier.
+All the defined behaviours remain, except for:
+
+1. Delegating the mode to the `"mode": "esm"` signifier
+2. Supporting the package.json `"main"` as the main entry point in ESM packages.
 
 ### Draft Implementation
 
