@@ -1,4 +1,4 @@
-# Package Mode Proposal
+# Package Type Proposal
 
 This is a [Phase 2 proposal](https://github.com/nodejs/modules/blob/master/doc/plan-for-new-modules-implementation.md#phase-2) for the Node.js [ECMAScript modules project](https://github.com/nodejs/ecmascript-modules).
 
@@ -10,7 +10,7 @@ To provide a simple mechanism for supporting `.js` ES Modules in Node.js.
 
 ## Current Status
 
-### Example of `"exports"` as the Mode Boundary
+### Example of `"exports"` as the ESM Signifier
 
 The [Node import file specifier resolution proposal](https://github.com/GeoffreyBooth/node-import-file-specifier-resolution-proposal) and the [package export maps proposal](https://github.com/jkrems/proposal-pkg-exports) allow `.js` files as ESM whenever the `"exports"` property is used in a package.
 
@@ -36,7 +36,7 @@ _package.json_
 
 then `node file.js` will now load `file.js` as an ES module, while also locking down the package subpaths.
 
-### `"exports"` Mode Boundary as a Conflation of Concerns
+### `"exports"` ESM Signifier as a Conflation of Concerns
 
 This is a conflation of three separate concerns:
 
@@ -50,8 +50,9 @@ Instead we should try to break up these cases into the simplest orthogonal primi
 
 ## Proposal
 
-The proposal, as presented before one year ago to this group (in 5 mins!), is to introduce the `"mode": "esm"` package boundary indicator
-to know when `.js` files should be treated as ESM.
+We propose the creation of a `package.json` `type` field that takes a string, to describe the “type” of the package the same way that a file extension describes the _type_ of a file. This `type` field is explicitly _descriptive,_ like the current `package.json` `name` or `version` fields, rather than a place for configuration like a `babel` block.
+
+Adding `"type": "esm"` to `package.json` tells Node to treat `.js` files in this package as ESM.
 
 _package.json_
 
@@ -65,7 +66,7 @@ _packge.json_
 
 ```json
 {
-  "mode": "esm"
+  "type": "esm"
 }
 ```
 
@@ -75,45 +76,51 @@ Thus a user can now achieve (1), `.js` as ESM, without necessarily opting in to 
 
 ### ESM entry point
 
-When it comes to setting the entry point, `"mode": "esm"` is actually fully compatible with the existing `"main"` property in the `package.json`.
+When it comes to setting the entry point, `"type": "esm"` is actually fully compatible with the existing `"main"` property in the `package.json`.
 
 So instead of `{ "exports": "./file.js" }` a user can write:
 
 ```json
 {
-  "mode": "esm",
+  "type": "esm",
   "main": "file.js"
 }
 ```
 
 to have a `.js` main ES module be supported.
 
-If they wrote `{ "main": "file.mjs" }` then they can still have ESM support fine without setting a mode boundary.
+If they wrote `{ "main": "file.mjs" }` then they can still have ESM support fine without setting a package type.
 
 Thus (2), defining the ESM package entry point, is now fully separated as well.
 
 ### Compatibility with the Package Exports Proposal
 
-In terms of bringing back the `"exports"` proposal here, this can be done in a compatible way to provide package export maps and encapsulation, and possibly even dual mode package support too.
+In terms of bringing back the `"exports"` proposal here, this can be done in a compatible way to provide package export maps and encapsulation, and possibly even dual-type (CommonJS and ESM) package support too.
 
 There are some implementation questions that would need to be worked out further:
 
-* Should `"exports"` automatically act as if `"mode": "esm"` is present?
+* Should `"exports"` automatically act as if `"type": "esm"` is present?
 * If there is both a `"main"` and an `"exports"` property does `"exports"` always win?
+
+### Multiple Types
+
+Currently this proposal envisions packages as only ever being a single type: CommonJS or ESM. If dual- or multiple-type packages are supported by Node in the future, this proposal will need to be amended so as to provide a way for users to specify separate entry points for each type, as `"main"` is already historically defined to only take a single string as its value.
+
+The package exports proposal would also need to be amended accordingly, if the `"exports"` key would not be limited to just ESM. We are deciding to keep the dual-/multiple-type configuration beyond the scope of this proposal for now, to potentially be added at a later date.
 
 ## Specification
 
-The specification for this feature is defined here - https://github.com/guybedford/ecmascript-modules/commit/25b493c369cb430b4eac3a69ecdabe7e6cdc41c3.
+The specification for this feature is defined at _TBD_.
 
-This is a diff on top of the current import file specifier resolution proposal spec is available at https://github.com/nodejs/ecmascript-modules/pull/19.
+This is a diff on top of the current import file specifier resolution proposal spec is available at _TBD_.
 
 All the defined behaviours remain, except for:
 
-1. Delegating the mode to the `"mode": "esm"` signifier.
-2. Supporting the package.json `"main"` as the main entry point in ESM packages.
+1. Delegating the type to the `"type": "esm"` signifier.
+2. Supporting the `package.json` `"main"` as the main entry point in ESM packages.
 
 ### Draft Implementation
 
-A draft implementation of the approach is available at https://github.com/guybedford/node/tree/irp-mode-implementation.
+A draft implementation of the approach is available at _TBD_.
 
 This does not yet provide the package export maps proposal support as the exact behaviours of this interaction still need to be worked out.
