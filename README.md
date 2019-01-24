@@ -121,6 +121,6 @@ All the defined behaviours remain, except for:
 
 ### Draft Implementation
 
-A draft implementation of the approach is available at _TBD_.
+A draft implementation of the approach is available at _https://github.com/guybedford/ecmascript-modules/tree/irp-type_.
 
 This does not yet provide the package export maps proposal support as the exact behaviours of this interaction still need to be worked out.
