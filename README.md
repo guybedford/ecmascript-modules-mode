@@ -52,7 +52,7 @@ Instead we should try to break up these cases into the simplest orthogonal primi
 
 We propose the creation of a `package.json` `type` field that takes a string, to describe the “type” of the package the same way that a file extension describes the _type_ of a file. This `type` field is explicitly _descriptive,_ like the current `package.json` `name` or `version` fields, rather than a place for configuration like a `babel` block.
 
-Adding `"type": "esm"` to `package.json` tells Node to treat `.js` files in this package as ESM.
+Adding `"type": "module"` to `package.json` tells Node to treat `.js` files in this package as ESM.
 
 _package.json_
 
@@ -66,7 +66,7 @@ _packge.json_
 
 ```json
 {
-  "type": "esm"
+  "type": "module"
 }
 ```
 
@@ -76,13 +76,13 @@ Thus a user can now achieve (1), `.js` as ESM, without necessarily opting in to 
 
 ### ESM entry point
 
-When it comes to setting the entry point, `"type": "esm"` is actually fully compatible with the existing `"main"` property in the `package.json`.
+When it comes to setting the entry point, `"type": "module"` is actually fully compatible with the existing `"main"` property in the `package.json`.
 
 So instead of `{ "exports": "./file.js" }` a user can write:
 
 ```json
 {
-  "type": "esm",
+  "type": "module",
   "main": "file.js"
 }
 ```
@@ -99,7 +99,7 @@ In terms of bringing back the `"exports"` proposal here, this can be done in a c
 
 There are some implementation questions that would need to be worked out further:
 
-* Should `"exports"` automatically act as if `"type": "esm"` is present?
+* Should `"exports"` automatically act as if `"type": "module"` is present?
 * If there is both a `"main"` and an `"exports"` property does `"exports"` always win?
 
 ### Multiple Types
@@ -116,7 +116,7 @@ This is a diff on top of the current import file specifier resolution proposal s
 
 All the defined behaviours remain, except for:
 
-1. Delegating the type to the `"type": "esm"` signifier.
+1. Delegating the type to the `"type": "module"` signifier.
 2. Supporting the `package.json` `"main"` as the main entry point in ESM packages.
 
 ### Draft Implementation
